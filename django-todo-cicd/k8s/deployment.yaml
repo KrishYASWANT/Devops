@@ -1,42 +1,43 @@
 apiVersion: apps/v1
-
 kind: Deployment
-
 metadata:
-
-  name: todo-deployment
-
+  name: todo-django-deployment
   labels:
-
-    app: todo-app
-
+    app: todo-django
 spec:
-
-  replicas: 3
-
+  replicas: 1
   selector:
-
     matchLabels:
-
-      app: todo-app
-
+      app: todo-django
   template:
-
     metadata:
-
       labels:
-
-        app: todo-app
-
+        app: todo-django
     spec:
-
       containers:
-
       - name: todo-app
-
-        image: trainwithshubham/django-todo:latest
-
+        image: your-dockerhub-username/todo-django:latest  # Replace with your image
         ports:
-
         - containerPort: 8000
+        env:
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: mysql-config
+                key: MYSQL_HOST
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: MYSQL_USER
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: MYSQL_PASSWORD
+          - name: MYSQL_DB
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: MYSQL_DB
 
